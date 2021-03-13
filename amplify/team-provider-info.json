@@ -1,0 +1,23 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-orderbook-dev-142916-authRole",
+            "UnauthRoleArn": "arn:aws:iam::909520030490:role/amplify-orderbook-dev-142916-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::909520030490:role/amplify-orderbook-dev-142916-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-orderbook-dev-142916-deployment",
+            "UnauthRoleName": "amplify-orderbook-dev-142916-unauthRole",
+            "StackName": "amplify-orderbook-dev-142916",
+            "StackId": "arn:aws:cloudformation:us-east-1:909520030490:stack/amplify-orderbook-dev-142916/66f07d00-8432-11eb-b6a7-0aeefef9077b",
+            "AmplifyAppId": "dh7cpmt6du62a"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dh7cpmt6du62a",
+                    "type": "cicd"
+                }
+            }
+        }
+    }
+}
