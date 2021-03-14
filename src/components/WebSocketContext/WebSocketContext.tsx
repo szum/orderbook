@@ -11,7 +11,9 @@ export const InitState: OrderbookOrders = {
 }
 
 enum WebSocketFeedName {
-    BookUi1 = 'book_ui_1'
+    BookUi1 = 'book_ui_1',
+    BookUi1Snapshot = 'book_ui_1_snapshot'
+
 }
 
 export const WebSocketContextProvider: React.FC = ({ children }) => {
@@ -19,13 +21,12 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
     const ws = useRef<WebSocket>();
 
     const connectWebsocket = () => {
-        // let connectInterval: NodeJS.Timeout;
+        let connectInterval: NodeJS.Timeout;
 
         ws.current = new WebSocket('wss://www.cryptofacilities.com/ws/v1');
         ws.current.onopen = () => {
-            console.log('connected');
             ws.current?.send(JSON.stringify({ "event": "subscribe", "feed": "book_ui_1", "product_ids": ["PI_XBTUSD"] }));
-            // clearTimeout(connectInterval);
+            clearTimeout(connectInterval);
         }
 
         ws.current.onmessage = evt => {
@@ -34,11 +35,14 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
             if (messageData?.feed && messageData?.feed.includes(WebSocketFeedName.BookUi1)) {
                 dispatch({ type: 'updateOrders', payload: JSON.parse(evt.data) });
             }
+
+            if (messageData?.feed && messageData?.feed.includes(WebSocketFeedName.BookUi1Snapshot)) {
+                dispatch({ type: 'updateSnapshot', payload: JSON.parse(evt.data) });
+            }
         }
 
         ws.current.onclose = () => {
-            console.log('closed');
-            // connectInterval = setTimeout(checkWebSocketConnection, 10000);
+            connectInterval = setTimeout(checkWebSocketConnection, 1000);
         }
 
         ws.current.onerror = err => {
