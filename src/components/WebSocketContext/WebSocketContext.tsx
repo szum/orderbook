@@ -18,11 +18,14 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
     const [state, dispatch] = useReducer(orderbookReducer, InitState);
     const ws = useRef<WebSocket>();
 
-    useEffect(() => {
+    const connectWebsocket = () => {
+        let connectInterval: NodeJS.Timeout;
+
         ws.current = new WebSocket('wss://www.cryptofacilities.com/ws/v1');
         ws.current.onopen = () => {
-            ws.current?.send(JSON.stringify({ "event": "subscribe", "feed": "book_ui_1", "product_ids": ["PI_XBTUSD"] }));
             console.log('connected');
+            ws.current?.send(JSON.stringify({ "event": "subscribe", "feed": "book_ui_1", "product_ids": ["PI_XBTUSD"] }));
+            clearTimeout(connectInterval);
         }
 
         ws.current.onmessage = evt => {
@@ -34,7 +37,8 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
         }
 
         ws.current.onclose = () => {
-            console.log('closed')
+            console.log('closed');
+            connectInterval = setTimeout(checkWebSocketConnection, 5000);
         }
 
         ws.current.onerror = err => {
@@ -45,11 +49,18 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
             );
             ws.current?.close();
         };
-    });
+
+    }
+
+    const checkWebSocketConnection = () => {
+        if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
+            connectWebsocket();
+        }
+    }
 
     useEffect(() => {
-        if (!ws.current) return;
-    }, [ws]);
+        connectWebsocket();
+    });
 
     return (
         <WebSocketContext.Provider value={{ ...state }}>
