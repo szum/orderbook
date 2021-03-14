@@ -1,5 +1,6 @@
 import React from 'react';
 import { OrderLevel } from '../../../../types/orderbookTypes';
+import Box from '@material-ui/core/Box';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
     },
 });
 
-
+const OrderbookCutoff = 5;
 
 export const OrderTable: React.FC<{ orders: OrderLevel[] }> = ({ orders }) => {
     const classes = useStyles();
@@ -31,24 +32,24 @@ export const OrderTable: React.FC<{ orders: OrderLevel[] }> = ({ orders }) => {
         <Table>
             <TableHead>
                 <TableRow>
-                    <StyledTableCell align="right" width="33%">
+                    <StyledTableCell align="center" width="33%">
                         Price
                     </StyledTableCell>
-                    <StyledTableCell align="right" width="33%">
+                    <StyledTableCell align="center" width="33%">
                         Size
                     </StyledTableCell>
-                    <StyledTableCell align="right" width="33%">
+                    <StyledTableCell align="center" width="33%">
                         Total
                     </StyledTableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
                 {
-                    orders.map((order: OrderLevel) => {
-                        return (<TableRow>
-                            <StyledTableCell align="right">{order.price}</StyledTableCell>
-                            <StyledTableCell align="right">{order.size}</StyledTableCell>
-                            <StyledTableCell align="right">{order.total}</StyledTableCell>
+                    orders.slice(0, OrderbookCutoff).map((order, idx) => {
+                        return (<TableRow key={idx}>
+                            <StyledTableCell align="center">{order.price}</StyledTableCell>
+                            <StyledTableCell align="center">{order.size}</StyledTableCell>
+                            <StyledTableCell align="center">{order.total}</StyledTableCell>
                         </TableRow>);
                     })
                 }

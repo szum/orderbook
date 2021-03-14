@@ -1,6 +1,6 @@
 export interface OrderbookOrders {
-    asks?: OrderLevel[];
-    bids?: OrderLevel[];
+    asks: OrderLevel[];
+    bids: OrderLevel[];
     feed?: string;
     numLevels?: number;
     product_id?: string;
@@ -9,8 +9,12 @@ export interface OrderbookOrders {
 export type OrderLevel = {
     price: number;
     size: number;
-    total: number;
+    total?: number;
 }
+
+// export interface OrderLevel {
+//     [key: number]: number;
+// }
 
 export interface OrderbookOrdersAPI {
     asks?: OrderLevelAPI;
