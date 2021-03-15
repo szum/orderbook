@@ -32,6 +32,8 @@ I would also specify the Content-Type option headers in any requests just to ens
 
 If there are any publicly facing endpoints like a login or registration, I would add in a captcha to the form to guard against DDOS attacks. If there is a password recovery feature, it's also important that when a password reset request is confirmed that we don't show any details about the user or whether the password reset email has been sent or not. This is an easy vector for attackers to run email lists to see who may be registered as a user.
 
+It is also important to review NPM packages before adding them to the project. Making sure that they have a good history and are maintained by trusted third parties. NPM also allows you to run security audits to assess dependencies for security vulnerabiltiies, so reviewing and acting on these reports is a high priority. 
+
 ## How would you improve the API that you just used?
 
 Without knowing the context of the backend, I would say that the frontend client should have as little business logic as possible because it exposes the application to bugs/incongruences between the data being served and what's actually being displayed. It also makes it harder to cover with specs, it makes the app size bigger, and it can feel redundant if the business logic is being duplicated from the backend. If I could request an improvement it would be to have the Total column calculated for each price level, and also have the entry levels sorted in the order they are meant to be displayed in.
