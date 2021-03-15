@@ -51,27 +51,43 @@ describe('#updateOrders', () => {
     });
 
     describe('when an existing entry level is added', () => {
-        it('should update the size of the price level', () => {
+        it('should clear the entry level if the size is 0', () => {
             let state;
             const snapShotAction = { type: "updateSnapshot", payload: mockSnapshotPayloadAPI } as Action;
             state = orderbookReducer(initialState, snapShotAction);
 
-            expect(state.asks.map((a) => a.size)).toEqual([9147.0, 2844.0, 2270.0, 3420.0, 26129.0]);
+            const mockDeltaPayloadAPI: OrderbookOrdersAPI = JSON.parse(`{"numLevels":25,"feed":"book_ui_1","asks":[[60696.5,0],[60697.0,0],[60707.0,0],[60711.5,2844.0],[60712.0, 9147.0]],"product_id":"PI_XBTUSD"}`);
+            const deltaAction = { type: "updateOrders", payload: mockDeltaPayloadAPI } as Action;
+            state = orderbookReducer(state, deltaAction);
+
+            expect(state.asks.map((ask) => ask.price)).toEqual([60712.0, 60711.5]);
+        });
+
+        it('should update the size if the new size is above 0', () => {
+            let state;
+            const snapShotAction = { type: "updateSnapshot", payload: mockSnapshotPayloadAPI } as Action;
+            state = orderbookReducer(initialState, snapShotAction);
 
             const mockDeltaPayloadAPI: OrderbookOrdersAPI = JSON.parse(`{"numLevels":25,"feed":"book_ui_1","asks":[[60712.0,100]],"product_id":"PI_XBTUSD"}`);
             const deltaAction = { type: "updateOrders", payload: mockDeltaPayloadAPI } as Action;
             state = orderbookReducer(state, deltaAction);
 
             expect(state.asks[0].size).toEqual(100);
+            expect(state.asks.map((a) => a.price)).toEqual([60712.0, 60711.5, 60707.0, 60697.0, 60696.5]);
+        });
+
+        it('should recalculate the totals after updating the entries', () => {
+            let state;
+            const snapShotAction = { type: "updateSnapshot", payload: mockSnapshotPayloadAPI } as Action;
+            state = orderbookReducer(initialState, snapShotAction);
+
+            expect(state.asks.map((a) => a.total)).toEqual([43810, 17681, 14261, 11991, 9147])
+
+            const mockDeltaPayloadAPI: OrderbookOrdersAPI = JSON.parse(`{"numLevels":25,"feed":"book_ui_1","asks":[[60696.5,0],[60697.0,0],[60707.0,0],[60711.5,2844.0],[60712.0, 9147.0]],"product_id":"PI_XBTUSD"}`);
+            const deltaAction = { type: "updateOrders", payload: mockDeltaPayloadAPI } as Action;
+            state = orderbookReducer(state, deltaAction);
+
+            expect(state.asks.map((a) => a.total)).toEqual([11991, 2844]);
         });
     })
-    // it('should hydrate the orders size and price using the payload', () => {
-    //     const deltaAction = { type: "updateOrders", payload: mockDeltaPayloadAPI } as Action;
-    //     state = orderbookReducer(state, deltaAction);
-
-    //     expect(state.asks.map((a) => a.price)).toEqual([60712.0, 60711.5, 60707.0, 60697.0, 60696.5])
-    //     expect(state.asks.map((a) => a.size)).toEqual([9147.0, 2844.0, 2270.0, 3420.0, 26129.0]);
-    //     expect(state.bids.map((b) => b.price)).toEqual([60659.0, 60659.5, 60660.0, 60672.5]);
-    //     expect(state.bids.map((b) => b.size)).toEqual([4045.0, 22673.0, 15000.0, 500, 78000.0]);
-    // });
 })

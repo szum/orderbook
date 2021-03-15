@@ -2,8 +2,7 @@
 
 I would make the specs for the Web Socket and reducers more robust with added mock builders. Would have loved to put more love into the design of the app itself. Adding coloured delta bars to display the change in sizes. A notification system for handling the state of the websocket connection (connected, closed, reopened) would have have been nice as well
 
-## What would you have done differently if you knew this page was going to get thousands of views
-per second vs per week?
+## What would you have done differently if you knew this page was going to get thousands of views per second vs per week?
 
 I would try to reduce the build size as much as possible. You can run the Webpack bundle analyzer to see which components are contributing the most to the size of the bundle. For a mature app you typically would want to see if you can replace libraries/external dependencies with vanilla JS, since this is a small app atm I opted for as little libraries as possible. Webpack also has a compression plugin that can gzip the bundle file to reduce the size as well.
 
