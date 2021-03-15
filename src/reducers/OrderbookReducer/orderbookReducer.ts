@@ -1,14 +1,14 @@
 import { CardActions } from '@material-ui/core';
 import { OrderbookOrders, OrderLevel, OrderbookOrdersAPI, OrderLevelAPI } from '../../types/orderbookTypes';
 
-type Action =
+export type Action =
     | { type: 'updateOrders'; payload: OrderbookOrdersAPI }
     | { type: 'updateSnapshot'; payload: OrderbookOrdersAPI };;
 
 export function orderbookReducer(state: OrderbookOrders, action: Action): OrderbookOrders {
     switch (action.type) {
         case 'updateSnapshot':
-            const asks = addTotals(action.payload.asks?.map((order) => {
+            const asks = addTotals(action.payload.asks?.reverse().map((order) => {
                 return {
                     price: order[0],
                     size: order[1]
@@ -21,6 +21,7 @@ export function orderbookReducer(state: OrderbookOrders, action: Action): Orderb
                     size: order[1]
                 }
             }));
+
             return { ...state, ...action.payload, asks: asks ? [...asks] : state.asks, bids: bids ? [...bids] : state.bids };
         case 'updateOrders':
 
